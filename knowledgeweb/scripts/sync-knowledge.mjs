@@ -130,6 +130,7 @@ C --> D[Available]
 D --> E[Payout Request]
 E --> F[Locked]
 F --> G[Payout Processed]`,
+    mockup_image_url: '/mockups/hybrid-wallet-sow.png',
     mockup_description: `Giao dien wallet hien thi:
 - Tong balance Class (Pending, Available)
 - Tong balance Event (Pending, Available)

@@ -206,6 +206,17 @@ export default function HomePage() {
                 </div>
               </section>
 
+              {selected.mockup_image_url && (
+                <section className="section">
+                  <h3>📐 Mockup Image</h3>
+                  <img 
+                    src={selected.mockup_image_url} 
+                    alt="Mockup" 
+                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid #ddd' }} 
+                  />
+                </section>
+              )}
+
               {selected.mockup_description && (
                 <section className="section">
                   <h3>📐 Mockup & UI</h3>

@@ -11,6 +11,7 @@ export type GraphEntity = {
   questions: string[]
   diagram?: string
   mockup_description?: string
+  mockup_image_url?: string
   notes_for_dev?: string
   notes_for_designer?: string
   notes_for_client?: string

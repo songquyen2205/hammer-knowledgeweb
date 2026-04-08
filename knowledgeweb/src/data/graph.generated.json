@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-08T11:21:38.604Z",
+  "generatedAt": "2026-04-08T11:25:49.056Z",
   "sourceOfTruth": "NotecuaQuyen/knowledge-base.md",
   "assumptions": [
     "Event refund settlement transfer đối ứng chưa được xác nhận đầy đủ (Giả định)"
@@ -125,6 +125,7 @@
         "Khi nào pending được release thành available?"
       ],
       "diagram": "flowchart LR\nA[Purchase] --> B[Pending]\nB --> C[Release]\nC --> D[Available]\nD --> E[Payout Request]\nE --> F[Locked]\nF --> G[Payout Processed]",
+      "mockup_image_url": "/mockups/hybrid-wallet-sow.png",
       "mockup_description": "Giao dien wallet hien thi:\n- Tong balance Class (Pending, Available)\n- Tong balance Event (Pending, Available)\n- Sanh sach transactions (DATE | TYPE | AMOUNT | STATUS)\n- Nut \"Request Payout\" khi available > 0\n- Chi tiet: bam de xem transaction detail (before/after balance)",
       "notes_for_dev": "Implementation notes:\n1. Schema: wallet_ledgers table (user_id, balance_class_pending, balance_class_available, balance_event_pending, balance_event_available, locked_for_payout)\n2. Transactions: wallet_transactions (wallet_ledger_id, type, amount, stream, status, reference_id, idempotency_key, before_balance, after_balance)\n3. Callbacks: Transfer.after_create -> cap nhat wallet ledger\n4. Reconciliation: jobs/reconcile_wallet_ledger.rb\n5. Audit: log toan bo transactions voi timestamp + user_id + ip\n6. Idempotency: unique constraint (idempotency_key) tren wallet_transactions",
       "notes_for_designer": "UI/UX design guidelines:\n1. Wallet dashboard: 4 balance cards (class pending, class available, event pending, event available)\n2. Color coding: Pending = #FFC107 (yellow), Available = #4CAF50 (green), Locked = #F44336 (red)\n3. Transaction list: duy tri horizontal scroll tren mobile, sticky header\n4. Payout modal: confirm dialog voi truong payout amount + bank info review\n5. Animation: balance update -> pulse animation (500ms)\n6. Responsive: tablet (2 columns), mobile (1 column)\n7. Dark mode: adapt color scheme (swap to #BBB for pending, #81C784 for available)",
