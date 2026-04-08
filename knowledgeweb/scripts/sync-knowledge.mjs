@@ -123,8 +123,13 @@ const entities = [
     tags: ['module', 'wallet', 'ledger'],
     highlights: ['auditability', 'idempotency', 'stream separation'],
     questions: ['Khi nao pending duoc release thanh available?'],
-    diagram:
-      'flowchart LR\\nA[Purchase] --> B[Pending]\\nB --> C[Release]\\nC --> D[Available]\\nD --> E[Payout Request]\\nE --> F[Locked]\\nF --> G[Payout Processed]',
+    diagram: `flowchart LR
+A[Purchase] --> B[Pending]
+B --> C[Release]
+C --> D[Available]
+D --> E[Payout Request]
+E --> F[Locked]
+F --> G[Payout Processed]`,
   },
   {
     slug: 'module-class-commerce',

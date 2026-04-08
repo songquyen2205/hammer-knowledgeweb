@@ -1,3 +1,4 @@
 node_modules/
 .next/
 .knowledgeweb-runtime.json
+.vercel

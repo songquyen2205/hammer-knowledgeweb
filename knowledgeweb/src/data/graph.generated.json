@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-08T11:05:55.256Z",
+  "generatedAt": "2026-04-08T11:17:59.062Z",
   "sourceOfTruth": "NotecuaQuyen/knowledge-base.md",
   "assumptions": [
     "Event refund settlement transfer đối ứng chưa được xác nhận đầy đủ (Giả định)"
@@ -124,7 +124,7 @@
       "questions": [
         "Khi nào pending được release thành available?"
       ],
-      "diagram": "flowchart LR\\nA[Purchase] --> B[Pending]\\nB --> C[Release]\\nC --> D[Available]\\nD --> E[Payout Request]\\nE --> F[Locked]\\nF --> G[Payout Processed]"
+      "diagram": "flowchart LR\nA[Purchase] --> B[Pending]\nB --> C[Release]\nC --> D[Available]\nD --> E[Payout Request]\nE --> F[Locked]\nF --> G[Payout Processed]"
     },
     {
       "slug": "module-class-commerce",
