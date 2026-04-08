@@ -1,0 +1,34 @@
+# Dependencies
+knowledgeweb/node_modules/
+knowledgeweb/.next/
+knowledgeweb/.turbo/
+
+# Environment variables
+knowledgeweb/.env
+knowledgeweb/.env.local
+knowledgeweb/.env.production.local
+
+# Runtime files
+knowledgeweb/.knowledgeweb-runtime.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary files
+*.tmp
+*.temp

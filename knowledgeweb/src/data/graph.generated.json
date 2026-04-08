@@ -1,0 +1,847 @@
+{
+  "generatedAt": "2026-04-08T11:05:55.256Z",
+  "sourceOfTruth": "NotecuaQuyen/knowledge-base.md",
+  "assumptions": [
+    "Event refund settlement transfer đối ứng chưa được xác nhận đầy đủ (Giả định)"
+  ],
+  "migrationLog": {
+    "oldFoldersChecked": [
+      "docs",
+      "Quyennote",
+      "docs-old",
+      "Notion-export"
+    ],
+    "oldFoldersFound": [],
+    "filesRead": 0,
+    "mergedLines": 0,
+    "deletedFolders": []
+  },
+  "entities": [
+    {
+      "slug": "actor-learner",
+      "type": "actor",
+      "title": "Learner",
+      "subtitle": "Người mua và tiêu thụ nội dung",
+      "summary": "Tham gia checkout class/event, học nội dung và có thể yêu cầu refund.",
+      "detail": "Xác nhận từ docs và flow checkout/refund.",
+      "color": "#0B6E99",
+      "tags": [
+        "actor",
+        "buyer",
+        "class",
+        "event"
+      ],
+      "highlights": [
+        "class checkout",
+        "event checkout",
+        "refund request"
+      ],
+      "questions": [
+        "Refund lead time hiện tại là bao lâu?"
+      ]
+    },
+    {
+      "slug": "actor-instructor",
+      "type": "actor",
+      "title": "Instructor",
+      "subtitle": "Người tạo class và nhận payout",
+      "summary": "Phát sinh class earnings, payout request và class refund deduction.",
+      "detail": "Xác nhận từ payout + transfer flow.",
+      "color": "#1E8449",
+      "tags": [
+        "actor",
+        "seller",
+        "class"
+      ],
+      "highlights": [
+        "class earnings",
+        "payout"
+      ],
+      "questions": [
+        "Có nên tách payout policy class/event?"
+      ]
+    },
+    {
+      "slug": "actor-event-organizer",
+      "type": "actor",
+      "title": "Event Organizer",
+      "subtitle": "Người tạo event và bán ticket",
+      "summary": "Quản lý event, ticket và event earnings.",
+      "detail": "Theo docs có khả năng không cần role instructor (Giả định).",
+      "color": "#AF4D98",
+      "tags": [
+        "actor",
+        "seller",
+        "event"
+      ],
+      "highlights": [
+        "event create",
+        "ticket sell"
+      ],
+      "questions": [
+        "Payout event dùng chung engine với instructor không?"
+      ]
+    },
+    {
+      "slug": "actor-admin-operations",
+      "type": "actor",
+      "title": "Admin/Operations",
+      "subtitle": "Xử lý refund, payout, moderation",
+      "summary": "Actor vận hành chốt trạng thái flow tài chính quan trọng.",
+      "detail": "Xác nhận từ admin controllers và docs BA.",
+      "color": "#6C5B4C",
+      "tags": [
+        "actor",
+        "operations",
+        "admin"
+      ],
+      "highlights": [
+        "approve refund",
+        "process payout"
+      ],
+      "questions": [
+        "Cần SLA nào cho refund/payout?"
+      ]
+    },
+    {
+      "slug": "module-wallet-ledger",
+      "type": "module",
+      "title": "Hammer Wallet Ledger",
+      "subtitle": "User-centric ledger theo stream class/event",
+      "summary": "Một wallet logic theo user, balance suy ra từ transaction.",
+      "detail": "Bucket mục tiêu: class_pending, class_available, event_pending, event_available, locked_for_payout.",
+      "color": "#283593",
+      "tags": [
+        "module",
+        "wallet",
+        "ledger"
+      ],
+      "highlights": [
+        "auditability",
+        "idempotency",
+        "stream separation"
+      ],
+      "questions": [
+        "Khi nào pending được release thành available?"
+      ],
+      "diagram": "flowchart LR\\nA[Purchase] --> B[Pending]\\nB --> C[Release]\\nC --> D[Available]\\nD --> E[Payout Request]\\nE --> F[Locked]\\nF --> G[Payout Processed]"
+    },
+    {
+      "slug": "module-class-commerce",
+      "type": "module",
+      "title": "Class Commerce",
+      "subtitle": "Order, paid item, refund, payout",
+      "summary": "Class flow có settlement log qua Transfer.",
+      "detail": "Xác nhận từ checkout/refund/payout class flows.",
+      "color": "#005792",
+      "tags": [
+        "module",
+        "class"
+      ],
+      "highlights": [
+        "order",
+        "paid item",
+        "transfer"
+      ],
+      "questions": [
+        "Partial refund được xử lý ra sao?"
+      ]
+    },
+    {
+      "slug": "module-event-commerce",
+      "type": "module",
+      "title": "Event Commerce",
+      "subtitle": "Event order, ticket, event refund",
+      "summary": "Event purchase/refund records đã có, settlement cần chốt thêm.",
+      "detail": "Event refund settlement transfer đang là điểm mở (Giả định).",
+      "color": "#F18F01",
+      "tags": [
+        "module",
+        "event"
+      ],
+      "highlights": [
+        "event user",
+        "ticket code",
+        "event refund"
+      ],
+      "questions": [
+        "Event earning timing là khi nào?"
+      ]
+    },
+    {
+      "slug": "flow-class-purchase",
+      "type": "flow",
+      "title": "Class Purchase",
+      "subtitle": "Checkout class và cấp entitlement",
+      "summary": "Order completed, paid item được cấp và transfer sales được tạo.",
+      "detail": "Xác nhận từ checkout.rb và transfer model.",
+      "color": "#2E8B57",
+      "tags": [
+        "flow",
+        "class_purchase"
+      ],
+      "highlights": [
+        "order completed",
+        "paid item",
+        "transfer sales"
+      ],
+      "questions": [
+        "Cần bổ sung buyer-side ledger entry không?"
+      ]
+    },
+    {
+      "slug": "flow-event-refund",
+      "type": "flow",
+      "title": "Event Refund",
+      "subtitle": "Admin cập nhật trạng thái hoàn tiền event",
+      "summary": "Đã có EventRefund status flow, settlement đối ứng cần xác nhận.",
+      "detail": "Admin event_refunds controller có status updates.",
+      "color": "#D95D39",
+      "tags": [
+        "flow",
+        "event_refund"
+      ],
+      "highlights": [
+        "pending",
+        "processing",
+        "refunded",
+        "declined"
+      ],
+      "questions": [
+        "Khi approved, có tạo transfer debit seller không?"
+      ]
+    },
+    {
+      "slug": "concept-transfer",
+      "type": "concept",
+      "title": "Transfer",
+      "subtitle": "Settlement log hiện tại",
+      "summary": "Ghi nhận sales/refund/payout, cần map với wallet transaction mới.",
+      "detail": "Hiện tại có callback cập nhật instructor_profile.balance.",
+      "color": "#455A64",
+      "tags": [
+        "concept",
+        "finance"
+      ],
+      "highlights": [
+        "sales",
+        "refund",
+        "payout"
+      ],
+      "questions": [
+        "Transfer và wallet transaction map 1-1 hay 1-n?"
+      ]
+    },
+    {
+      "slug": "metric-gmv-class",
+      "type": "metric",
+      "title": "GMV Class",
+      "subtitle": "Tổng giá trị giao dịch class",
+      "summary": "KPI bắt buộc theo dõi theo stream class.",
+      "detail": "Nguồn docs KPI và reporting reminders.",
+      "color": "#1D70B8",
+      "tags": [
+        "metric",
+        "class"
+      ],
+      "highlights": [
+        "revenue class"
+      ],
+      "questions": [
+        "Trạng thái nào được tính vào GMV class?"
+      ]
+    },
+    {
+      "slug": "metric-gmv-event",
+      "type": "metric",
+      "title": "GMV Event",
+      "subtitle": "Tổng giá trị giao dịch event",
+      "summary": "KPI bắt buộc theo dõi theo stream event.",
+      "detail": "Cần tách khỏi class để tránh nhiễu báo cáo.",
+      "color": "#138A9A",
+      "tags": [
+        "metric",
+        "event"
+      ],
+      "highlights": [
+        "revenue event"
+      ],
+      "questions": [
+        "Refund event trừ KPI theo mốc nào?"
+      ]
+    },
+    {
+      "slug": "system-hammer-api",
+      "type": "system",
+      "title": "hammer-api",
+      "subtitle": "Rails backend domain va operations",
+      "summary": "Nguồn sự thật cho order/refund/payout/event records.",
+      "detail": "Đối chiếu entity names từ routes/models quan trọng.",
+      "color": "#334E68",
+      "tags": [
+        "system",
+        "backend"
+      ],
+      "highlights": [
+        "routes",
+        "models",
+        "admin"
+      ],
+      "questions": [
+        "Wallet service nên đặt ở app/services nào?"
+      ]
+    },
+    {
+      "slug": "source-knowledge-base",
+      "type": "source",
+      "title": "NotecuaQuyen/knowledge-base.md",
+      "subtitle": "Single source of truth",
+      "summary": "Nguồn ưu tiên để suy diễn tri thức cho knowledge web.",
+      "detail": "Mọi kết luận cần bám sát knowledge-base và docs liên quan.",
+      "color": "#1B263B",
+      "tags": [
+        "source",
+        "docs"
+      ],
+      "highlights": [
+        "actors",
+        "flows",
+        "kpis"
+      ],
+      "questions": [
+        "Khi có thay đổi lớn, đã update knowledge-base trước chưa?"
+      ]
+    },
+    {
+      "slug": "module-social",
+      "type": "module",
+      "title": "Social Community",
+      "subtitle": "Follow, post, comment, chat, feed",
+      "summary": "Tạo demand và giữ chân user qua social graph. Chủ yếu trên mobile.",
+      "detail": "Post/comment/like/favorite, follow/follower, chat, group chat, notification, feed by interest.",
+      "color": "#6A0572",
+      "tags": [
+        "module",
+        "social",
+        "mobile"
+      ],
+      "highlights": [
+        "post",
+        "follow",
+        "feed",
+        "chat"
+      ],
+      "questions": [
+        "Feed algorithm dua tren interest va follow co dung Engagement score khong?"
+      ]
+    },
+    {
+      "slug": "module-identity",
+      "type": "module",
+      "title": "Identity & Account",
+      "subtitle": "User, profile, auth, role",
+      "summary": "Quản lý danh tính người dùng, role và cài đặt tài khoản.",
+      "detail": "User có thể đồng thời là buyer, seller và event organizer. Auth qua SSO/OTP/email.",
+      "color": "#2C3E50",
+      "tags": [
+        "module",
+        "identity",
+        "auth"
+      ],
+      "highlights": [
+        "user",
+        "profile",
+        "role",
+        "auth"
+      ],
+      "questions": [
+        "Role event organizer có tách biệt hoàn toàn khỏi instructor không?"
+      ]
+    },
+    {
+      "slug": "flow-class-refund",
+      "type": "flow",
+      "title": "Class Refund",
+      "subtitle": "Buyer request -> Admin approve -> Transfer refund",
+      "summary": "Admin duyệt refund, tạo Transfer refund, xóa PaidItem và chuyển LineItem sang refunded.",
+      "detail": "Xác nhận từ admin/refunds_controller.rb và transfer model.",
+      "color": "#C0392B",
+      "tags": [
+        "flow",
+        "class_refund",
+        "finance"
+      ],
+      "highlights": [
+        "refund approved",
+        "transfer refund",
+        "paid item removed"
+      ],
+      "questions": [
+        "Partial refund trên một order item được xử lý ra sao?"
+      ]
+    },
+    {
+      "slug": "flow-instructor-payout",
+      "type": "flow",
+      "title": "Instructor Payout",
+      "subtitle": "Instructor request -> Admin process -> Transfer payout",
+      "summary": "Instructor tạo Payout request, admin xử lý, tạo Transfer payout và trừ balance.",
+      "detail": "Xác nhận từ admin/payouts_controller.rb và transfer.after_create callback.",
+      "color": "#1A5276",
+      "tags": [
+        "flow",
+        "payout",
+        "instructor"
+      ],
+      "highlights": [
+        "payout request",
+        "transfer payout",
+        "balance update"
+      ],
+      "questions": [
+        "Cần tách payout theo stream class/event ở flow này không?"
+      ]
+    },
+    {
+      "slug": "flow-event-checkout",
+      "type": "flow",
+      "title": "Event Checkout",
+      "subtitle": "Buyer chọn ticket -> Checkout -> EventUser + ticket codes",
+      "summary": "Buyer checkout event, hệ thống tạo EventUser/EventUserItem, sinh ticket_code.",
+      "detail": "Xác nhận từ api/v1/users/events/checkout_event_order.rb và pay_now_event.rb.",
+      "color": "#D68910",
+      "tags": [
+        "flow",
+        "event_purchase",
+        "ticket"
+      ],
+      "highlights": [
+        "event user",
+        "event user item",
+        "ticket code"
+      ],
+      "questions": [
+        "Earnings log có được ghi ngay lúc checkout hay chờ event kết thúc?"
+      ]
+    },
+    {
+      "slug": "system-hammer-web",
+      "type": "system",
+      "title": "hammer-web",
+      "subtitle": "Next.js web, instructor + learner ops",
+      "summary": "Kênh chính cho instructor dashboard, checkout class/event, transaction history.",
+      "detail": "Module-based: Classes, Checkout, Event, Instructor, Transactions, MyLearning, Profile, Search, Home.",
+      "color": "#1A237E",
+      "tags": [
+        "system",
+        "frontend",
+        "web"
+      ],
+      "highlights": [
+        "instructor dashboard",
+        "checkout",
+        "transactions"
+      ],
+      "questions": [
+        "Web co hien thi wallet ledger (class_available/event_available) khong?"
+      ]
+    },
+    {
+      "slug": "system-hammer-mobile",
+      "type": "system",
+      "title": "hammer-mobile",
+      "subtitle": "React Native, social-first mobile",
+      "summary": "Social feed, live stream, learning consumption, creator journey trên mobile.",
+      "detail": "Screens: Feed, Explore, LiveStream, CreateVideo, Instructor, MyRefunds, Messages, Profile.",
+      "color": "#1B5E20",
+      "tags": [
+        "system",
+        "frontend",
+        "mobile"
+      ],
+      "highlights": [
+        "social feed",
+        "livestream",
+        "refund mobile"
+      ],
+      "questions": [
+        "Mobile có cần payout request UI hay do web xử lý?"
+      ]
+    },
+    {
+      "slug": "metric-refund-rate",
+      "type": "metric",
+      "title": "Refund Rate",
+      "subtitle": "Tỉ lệ giao dịch hoàn tiền / tổng giao dịch",
+      "summary": "KPI cảnh báo chất lượng class/event và sẵn sàng của refund flow.",
+      "detail": "Nên tách refund rate class và refund rate event để tránh nhiễu.",
+      "color": "#880E4F",
+      "tags": [
+        "metric",
+        "refund",
+        "risk"
+      ],
+      "highlights": [
+        "refund class",
+        "refund event"
+      ],
+      "questions": [
+        "Refund rate ngưỡng nào được coi là alert?"
+      ]
+    },
+    {
+      "slug": "metric-payout-lead-time",
+      "type": "metric",
+      "title": "Payout Lead Time",
+      "subtitle": "Thời gian từ request đến processed",
+      "summary": "KPI vận hành cho payout. Thu ngắn lead time giảm rủi ro và tăng tin nhiệm với creator.",
+      "detail": "Nguồn: cột created_at và updated_at trên Payout model.",
+      "color": "#01579B",
+      "tags": [
+        "metric",
+        "payout",
+        "operations"
+      ],
+      "highlights": [
+        "payout sla",
+        "ops efficiency"
+      ],
+      "questions": [
+        "SLA hiện tại cho payout là bao nhiêu ngày?"
+      ]
+    },
+    {
+      "slug": "rule-ledger-idempotency",
+      "type": "rule",
+      "title": "Ledger Idempotency Rule",
+      "subtitle": "Mỗi giao dịch có reference id + idempotency key",
+      "summary": "Không được tạo trùng finance transaction. Cần trace đầy đủ theo reference id.",
+      "detail": "Rule này là bắt buộc cho payment/refund/payout để đảm bảo auditability.",
+      "color": "#4A235A",
+      "tags": [
+        "rule",
+        "finance",
+        "idempotency"
+      ],
+      "highlights": [
+        "idempotency key",
+        "reference id",
+        "audit trail"
+      ],
+      "questions": [
+        "Đã có unique constraint theo idempotency key cho wallet transaction chưa?"
+      ]
+    },
+    {
+      "slug": "open-issue-event-settlement",
+      "type": "open_issue",
+      "title": "Open Issue: Event Settlement",
+      "subtitle": "Event earning/refund settlement chưa chốt",
+      "summary": "Cần chốt event earning timing và event refund settlement đối ứng với seller.",
+      "detail": "Liên quan trực tiếp đến payout policy event và đối soát doanh thu ròng.",
+      "color": "#7B241C",
+      "tags": [
+        "open_issue",
+        "event",
+        "settlement"
+      ],
+      "highlights": [
+        "event earning timing",
+        "event refund transfer"
+      ],
+      "questions": [
+        "Event refund approved có tạo transfer debit seller ngay không?"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "actor-learner",
+      "to": "flow-class-purchase",
+      "type": "participates",
+      "label": "buyer"
+    },
+    {
+      "from": "actor-learner",
+      "to": "flow-event-refund",
+      "type": "initiates",
+      "label": "refund request"
+    },
+    {
+      "from": "actor-instructor",
+      "to": "module-class-commerce",
+      "type": "owns",
+      "label": "class seller"
+    },
+    {
+      "from": "actor-event-organizer",
+      "to": "module-event-commerce",
+      "type": "owns",
+      "label": "event seller"
+    },
+    {
+      "from": "actor-admin-operations",
+      "to": "flow-event-refund",
+      "type": "decides",
+      "label": "approve/decline"
+    },
+    {
+      "from": "module-class-commerce",
+      "to": "concept-transfer",
+      "type": "writes",
+      "label": "sales/refund/payout"
+    },
+    {
+      "from": "module-event-commerce",
+      "to": "flow-event-refund",
+      "type": "contains",
+      "label": "refund flow"
+    },
+    {
+      "from": "module-wallet-ledger",
+      "to": "module-class-commerce",
+      "type": "normalizes",
+      "label": "class stream"
+    },
+    {
+      "from": "module-wallet-ledger",
+      "to": "module-event-commerce",
+      "type": "normalizes",
+      "label": "event stream"
+    },
+    {
+      "from": "module-class-commerce",
+      "to": "metric-gmv-class",
+      "type": "measured_by",
+      "label": "gmv class"
+    },
+    {
+      "from": "module-event-commerce",
+      "to": "metric-gmv-event",
+      "type": "measured_by",
+      "label": "gmv event"
+    },
+    {
+      "from": "system-hammer-api",
+      "to": "module-wallet-ledger",
+      "type": "supports",
+      "label": "domain implementation"
+    },
+    {
+      "from": "source-knowledge-base",
+      "to": "module-wallet-ledger",
+      "type": "documents",
+      "label": "business source"
+    },
+    {
+      "from": "actor-learner",
+      "to": "module-social",
+      "type": "participates",
+      "label": "social engagement"
+    },
+    {
+      "from": "actor-instructor",
+      "to": "module-social",
+      "type": "participates",
+      "label": "community building"
+    },
+    {
+      "from": "actor-learner",
+      "to": "flow-class-refund",
+      "type": "initiates",
+      "label": "refund request"
+    },
+    {
+      "from": "actor-admin-operations",
+      "to": "flow-class-refund",
+      "type": "decides",
+      "label": "approve/decline"
+    },
+    {
+      "from": "actor-instructor",
+      "to": "flow-instructor-payout",
+      "type": "initiates",
+      "label": "payout request"
+    },
+    {
+      "from": "actor-admin-operations",
+      "to": "flow-instructor-payout",
+      "type": "decides",
+      "label": "process"
+    },
+    {
+      "from": "actor-learner",
+      "to": "flow-event-checkout",
+      "type": "participates",
+      "label": "buyer"
+    },
+    {
+      "from": "module-class-commerce",
+      "to": "flow-class-refund",
+      "type": "contains",
+      "label": "refund flow"
+    },
+    {
+      "from": "module-class-commerce",
+      "to": "flow-instructor-payout",
+      "type": "contains",
+      "label": "payout flow"
+    },
+    {
+      "from": "module-event-commerce",
+      "to": "flow-event-checkout",
+      "type": "contains",
+      "label": "checkout flow"
+    },
+    {
+      "from": "module-social",
+      "to": "system-hammer-mobile",
+      "type": "primary_channel",
+      "label": "mobile-first"
+    },
+    {
+      "from": "module-class-commerce",
+      "to": "system-hammer-web",
+      "type": "primary_channel",
+      "label": "web checkout"
+    },
+    {
+      "from": "system-hammer-web",
+      "to": "module-identity",
+      "type": "depends",
+      "label": "auth"
+    },
+    {
+      "from": "system-hammer-mobile",
+      "to": "module-identity",
+      "type": "depends",
+      "label": "auth"
+    },
+    {
+      "from": "system-hammer-api",
+      "to": "module-social",
+      "type": "supports",
+      "label": "backend"
+    },
+    {
+      "from": "system-hammer-api",
+      "to": "module-identity",
+      "type": "supports",
+      "label": "user model"
+    },
+    {
+      "from": "flow-class-refund",
+      "to": "metric-refund-rate",
+      "type": "measured_by",
+      "label": "refund class rate"
+    },
+    {
+      "from": "flow-instructor-payout",
+      "to": "metric-payout-lead-time",
+      "type": "measured_by",
+      "label": "payout sla"
+    },
+    {
+      "from": "module-wallet-ledger",
+      "to": "rule-ledger-idempotency",
+      "type": "governed_by",
+      "label": "core rule"
+    },
+    {
+      "from": "module-event-commerce",
+      "to": "open-issue-event-settlement",
+      "type": "has_risk",
+      "label": "pending decision"
+    }
+  ],
+  "scenarios": [
+    {
+      "slug": "scenario-wallet-core",
+      "title": "Wallet Core Lifecycle",
+      "summary": "Từ purchase đến payout processed theo bucket logic.",
+      "mood": "transactional",
+      "steps": [
+        {
+          "entitySlug": "flow-class-purchase",
+          "caption": "Buyer mua class, tạo settlement record."
+        },
+        {
+          "entitySlug": "module-wallet-ledger",
+          "caption": "Ghi pending bucket cho seller."
+        },
+        {
+          "entitySlug": "module-wallet-ledger",
+          "caption": "Release pending sang available theo policy."
+        },
+        {
+          "entitySlug": "actor-instructor",
+          "caption": "Tạo payout request từ available."
+        },
+        {
+          "entitySlug": "concept-transfer",
+          "caption": "Ghi payout processed settlement."
+        }
+      ]
+    },
+    {
+      "slug": "scenario-event-refund-gap",
+      "title": "Event Refund Settlement Gap",
+      "summary": "Mô tả điểm mở giữa status event refund và settlement transfer.",
+      "mood": "risk-aware",
+      "steps": [
+        {
+          "entitySlug": "actor-learner",
+          "caption": "Gửi event refund request."
+        },
+        {
+          "entitySlug": "flow-event-refund",
+          "caption": "Admin update status."
+        },
+        {
+          "entitySlug": "module-event-commerce",
+          "caption": "Cần xác nhận settlement đối ứng (Giả định)."
+        },
+        {
+          "entitySlug": "module-wallet-ledger",
+          "caption": "Cần chốt rule debit seller/credit buyer theo stream."
+        }
+      ]
+    },
+    {
+      "slug": "scenario-full-project-actor-journey",
+      "title": "Hành trình Actor trong Hammer Ecosystem",
+      "summary": "Một user có thể là learner, instructor và event organizer cùng lúc. Toàn bộ journey từ social đến commerce.",
+      "mood": "overview",
+      "steps": [
+        {
+          "entitySlug": "module-identity",
+          "caption": "User đăng ký, tạo profile."
+        },
+        {
+          "entitySlug": "module-social",
+          "caption": "Theo dõi instructor, xem post, tạo engagement."
+        },
+        {
+          "entitySlug": "flow-class-purchase",
+          "caption": "Learner checkout class, nhận PaidItem entitlement."
+        },
+        {
+          "entitySlug": "flow-event-checkout",
+          "caption": "Learner mua vé event, nhận ticket code."
+        },
+        {
+          "entitySlug": "actor-instructor",
+          "caption": "Instructor tạo class, theo dõi earnings."
+        },
+        {
+          "entitySlug": "flow-instructor-payout",
+          "caption": "Instructor request payout, admin xử lý."
+        },
+        {
+          "entitySlug": "module-wallet-ledger",
+          "caption": "Target: wallet ledger ghi nhận toàn bộ lifecycle trên."
+        }
+      ]
+    }
+  ]
+}

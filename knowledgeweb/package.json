@@ -1,0 +1,32 @@
+{
+  "name": "hammer-knowledgeweb",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "knowledge:sync": "node ./scripts/sync-knowledge.mjs",
+    "knowledge:watch": "node ./scripts/watch-knowledge.mjs",
+    "knowledge:dev": "node server.js",
+    "knowledge:update": "node server.js --sync-once",
+    "knowledge:ensure-running": "powershell -ExecutionPolicy Bypass -File ./scripts/ensure-running.ps1",
+    "knowledge:install-autostart": "powershell -ExecutionPolicy Bypass -File ./scripts/install-autostart.ps1",
+    "predev": "npm run knowledge:sync",
+    "prebuild": "npm run knowledge:sync"
+  },
+  "dependencies": {
+    "axios": "^1.8.1",
+    "chokidar": "^4.0.3",
+    "mermaid": "^10.8.0",
+    "next": "14.2.32",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.30",
+    "@types/react": "18.3.20",
+    "@types/react-dom": "18.3.6",
+    "typescript": "5.8.3"
+  }
+}
