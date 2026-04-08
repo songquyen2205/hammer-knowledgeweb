@@ -206,6 +206,42 @@ export default function HomePage() {
                 </div>
               </section>
 
+              {selected.mockup_description && (
+                <section className="section">
+                  <h3>📐 Mockup & UI</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                    {selected.mockup_description}
+                  </pre>
+                </section>
+              )}
+
+              {selected.notes_for_dev && (
+                <section className="section">
+                  <h3>👨‍💻 Developer Notes</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                    {selected.notes_for_dev}
+                  </pre>
+                </section>
+              )}
+
+              {selected.notes_for_designer && (
+                <section className="section">
+                  <h3>🎨 Designer Notes</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                    {selected.notes_for_designer}
+                  </pre>
+                </section>
+              )}
+
+              {selected.notes_for_client && (
+                <section className="section">
+                  <h3>📋 Client Notes</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                    {selected.notes_for_client}
+                  </pre>
+                </section>
+              )}
+
               <section className="section">
                 <h3>Data metadata</h3>
                 <div className="meta">generatedAt: {data.generatedAt}</div>

@@ -10,6 +10,10 @@ export type GraphEntity = {
   highlights: string[]
   questions: string[]
   diagram?: string
+  mockup_description?: string
+  notes_for_dev?: string
+  notes_for_designer?: string
+  notes_for_client?: string
 }
 
 export type GraphEdge = {

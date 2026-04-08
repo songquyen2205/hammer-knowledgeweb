@@ -130,6 +130,35 @@ C --> D[Available]
 D --> E[Payout Request]
 E --> F[Locked]
 F --> G[Payout Processed]`,
+    mockup_description: `Giao dien wallet hien thi:
+- Tong balance Class (Pending, Available)
+- Tong balance Event (Pending, Available)
+- Sanh sach transactions (DATE | TYPE | AMOUNT | STATUS)
+- Nut "Request Payout" khi available > 0
+- Chi tiet: bam de xem transaction detail (before/after balance)`,
+    notes_for_dev: `Implementation notes:
+1. Schema: wallet_ledgers table (user_id, balance_class_pending, balance_class_available, balance_event_pending, balance_event_available, locked_for_payout)
+2. Transactions: wallet_transactions (wallet_ledger_id, type, amount, stream, status, reference_id, idempotency_key, before_balance, after_balance)
+3. Callbacks: Transfer.after_create -> cap nhat wallet ledger
+4. Reconciliation: jobs/reconcile_wallet_ledger.rb
+5. Audit: log toan bo transactions voi timestamp + user_id + ip
+6. Idempotency: unique constraint (idempotency_key) tren wallet_transactions`,
+    notes_for_designer: `UI/UX design guidelines:
+1. Wallet dashboard: 4 balance cards (class pending, class available, event pending, event available)
+2. Color coding: Pending = #FFC107 (yellow), Available = #4CAF50 (green), Locked = #F44336 (red)
+3. Transaction list: duy tri horizontal scroll tren mobile, sticky header
+4. Payout modal: confirm dialog voi truong payout amount + bank info review
+5. Animation: balance update -> pulse animation (500ms)
+6. Responsive: tablet (2 columns), mobile (1 column)
+7. Dark mode: adapt color scheme (swap to #BBB for pending, #81C784 for available)`,
+    notes_for_client: `Business rules & client communication:
+1. Pending balance: tie tuc 7 ngay sau purchase. Sau 7 ngay -> available (cong khai policy nay)
+2. Payout minimum: 100k VND (hoac USD equivalent)
+3. Payout frequency: 2 lan/tuan (Monday & Friday) hoac on-demand via premium
+4. Event earning timing: duoc available ngay khi event ket thuc (hoac admin approve)
+5. Refund impact: pending tru truoc, het pending thi available
+6. Locked balance: tru 10% cho platform commission khi payout
+7. Reports available: monthly CSV export, yearly tax document (invoice)`,
   },
   {
     slug: 'module-class-commerce',
