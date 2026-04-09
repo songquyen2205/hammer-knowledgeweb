@@ -1764,7 +1764,7 @@
                           </select>
                         </div>
                       </div>
-                      <div id="hyTypeHint" style="font-size:11px;color:#64748b;margin:0 0 10px;padding:8px 10px;background:#f8fafc;border-radius:8px;">All: bao gồm Event + Course giao dịch vào/ra.</div>
+                      <div id="hyTypeHint" style="font-size:11px;color:#64748b;margin:0 0 10px;padding:8px 10px;background:#f8fafc;border-radius:8px;">Event tab: giao dịch Event (bao gồm mua vé, earning, refund, payout).</div>
                       <ul class="tx-list" id="hyTxList" style="padding:0;background:#fff;border:1px solid #f1f5f9;border-radius:14px;"></ul>
                     </div>
                   </div>
@@ -2124,6 +2124,8 @@
       { id:'TX-EVR-006', type:'event_refund', label:{vi:'Hoàn tiền Event', en:'Event refund'}, direction:'in', stream:'event', asset:'cash', status:'processing', amount:79.00, currency:'USD', title:{vi:'Hoàn tiền vé: Summer Jam 2026 (huỷ)', en:'Ticket refund: Summer Jam 2026 (cancelled)'}, timestamp:'2026-03-30 08:30', ref:'EVENT_REFUND#ER-771', ledgerImpact:{vi:'buyer_available +79.00 | seller_event_pending -79.00', en:'buyer_available +79.00 | seller_event_pending -79.00'}, note:{vi:'Buyer được cộng ví ngay sau khi huỷ. Trạng thái processing phản ánh phần settlement đối ứng phía seller.', en:'Buyer wallet is credited immediately after cancellation. Processing status reflects seller-side counter-settlement.'} },
       // Case 7 — Event payout request (organizer yêu cầu rút, trạng thái pending)
       { id:'TX-EPR-007', type:'event_payout_request', label:{vi:'Yêu cầu rút Event', en:'Event payout request'}, direction:'out', stream:'event', asset:'cash', status:'pending', amount:-120.00, currency:'USD', title:{vi:'Yêu cầu rút Event payout', en:'Event payout request'}, timestamp:'2026-03-30 16:00', ref:'EVENT_PAYOUT_REQ#EPR-80341', ledgerImpact:{vi:'event_available -120.00 | event_locked_for_payout +120.00', en:'event_available -120.00 | event_locked_for_payout +120.00'}, note:{vi:'Chờ admin duyệt. Tiền lock trong event_locked_for_payout.', en:'Waiting for admin approval. Funds are locked in event_locked_for_payout.'} },
+      // Case 7B — Event payout request đang xử lý (processing)
+      { id:'TX-EPR-007B', type:'event_payout_request', label:{vi:'Yêu cầu rút Event (đang xử lý)', en:'Event payout request (processing)'}, direction:'out', stream:'event', asset:'cash', status:'processing', amount:-85.00, currency:'USD', title:{vi:'Yêu cầu rút Event payout đang xử lý', en:'Event payout request is processing'}, timestamp:'2026-03-30 18:45', ref:'EVENT_PAYOUT_REQ#EPR-80492', ledgerImpact:{vi:'event_available -85.00 | event_locked_for_payout +85.00', en:'event_available -85.00 | event_locked_for_payout +85.00'}, note:{vi:'Đã qua bước duyệt đầu, đang xử lý payout provider.', en:'Passed initial review and is being processed by payout provider.'} },
       // Case 8 — Event payout processed (admin đã chuyển tiền)
       { id:'TX-EPP-008', type:'event_payout_processed', label:{vi:'Payout Event đã xử lý', en:'Event payout processed'}, direction:'out', stream:'event', asset:'cash', status:'completed', amount:-200.00, currency:'USD', title:{vi:'Event payout đã xử lý: Street Art Festival', en:'Event payout processed: Street Art Festival'}, timestamp:'2026-03-25 09:00', ref:'EVENT_PAYOUT#EP-9006', ledgerImpact:{vi:'event_locked_for_payout -200.00 → transferred to bank', en:'event_locked_for_payout -200.00 → transferred to bank'}, note:{vi:'Admin đã chuyển ACH thành công. Audit trail đầy đủ.', en:'Admin completed ACH transfer successfully. Audit trail is intact.'} },
       // Case 9 — Instructor payout legacy (outside Wallet scope, hiển thị để reference)
@@ -3318,7 +3320,7 @@
       // Unified wallet config (single phase, full SOW scope)
       const hyWalletMeta = {
         homeMeta: 'My Balance: tổng hợp Event/Course/Pending, payout chỉ dùng Event available.',
-        historyMeta: 'History theo tab All/Event/Course + search + advanced filter.',
+        historyMeta: 'History theo tab Event/Course/Payout + search + advanced filter.',
         payoutMeta: 'Request payout chỉ trừ Event available, không đụng Course/Class bucket.'
       }
 
@@ -3337,7 +3339,7 @@
         },
         list: {
           title: 'Context Note (BA/PO/PM)',
-          design: 'Tabs All/Event/Course + search + advanced filter. Badge stream để scan nhanh từng giao dịch.',
+          design: 'Tabs Event/Course/Payout + search + advanced filter. Badge stream để scan nhanh từng giao dịch.',
           dev: 'Filter chạy theo stream/status/direction; không mutate data gốc. Event/Course count cập nhật động.',
           client: 'Màn history phục vụ tự tra cứu và support tra soát theo reference dễ dàng.'
         },
@@ -3491,7 +3493,10 @@
           .filter((x) => {
             if (hyQuick === 'event' && x.stream !== 'event') return false
             if (hyQuick === 'course' && x.stream !== 'class') return false
-            if (hyQuick === 'payout' && !String(x.type || '').includes('payout')) return false
+            if (hyQuick === 'payout') {
+              if (!String(x.type || '').includes('payout')) return false
+              if (!['pending', 'processing', 'completed'].includes(String(x.status || '').toLowerCase())) return false
+            }
             return true
           })
           .filter((x) => (hyAdvStatus === 'all' ? true : String(txStatusText(x)) === hyAdvStatus))
@@ -3540,7 +3545,7 @@
         if (typeHintEl) {
           if (hyQuick === 'event') typeHintEl.textContent = 'Event tab: In = hoàn tiền event + doanh thu event; Out = mua vé + request payout event.'
           else if (hyQuick === 'course') typeHintEl.textContent = 'Course tab: In = hoàn tiền course + doanh thu instructor; Out = mua course + payout class (legacy record).'
-          else if (hyQuick === 'payout') typeHintEl.textContent = 'Payout tab: chỉ hiển thị giao dịch rút tiền (request/processed), không gồm refund.'
+          else if (hyQuick === 'payout') typeHintEl.textContent = 'Payout tab: chỉ hiển thị payout theo 3 trạng thái pending, processing, completed (không gồm refund).'
           else typeHintEl.textContent = 'Lịch sử giao dịch.'
         }
         listEl.innerHTML = rows.map((x) => rowHtml(x)).join('') || '<li><div class="tx-meta" style="padding:14px 14px;">Không có giao dịch phù hợp.</div></li>'
