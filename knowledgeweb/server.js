@@ -9,6 +9,7 @@ const appRoot = __dirname
 const repoRoot = path.resolve(appRoot, '..')
 const dataFile = path.join(appRoot, 'src', 'data', 'graph.generated.json')
 const htmlFile = path.join(appRoot, 'public', 'index.html')
+const publicDir = path.join(appRoot, 'public')
 const runtimeFile = path.join(appRoot, '.knowledgeweb-runtime.json')
 const portFile = path.join(appRoot, '.knowledgeweb-port')
 const args = process.argv.slice(2)
@@ -345,6 +346,32 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
       res.end(html)
       return
+    }
+
+    // Serve static files from public/ (e.g. /vendor/mermaid.min.js)
+    const staticFile = path.resolve(path.join(publicDir, reqUrl.pathname))
+    if (staticFile.startsWith(publicDir + path.sep)) {
+      try {
+        if (fs.existsSync(staticFile) && fs.statSync(staticFile).isFile()) {
+          const mimeMap = {
+            '.js':    'application/javascript; charset=utf-8',
+            '.css':   'text/css; charset=utf-8',
+            '.json':  'application/json; charset=utf-8',
+            '.png':   'image/png',
+            '.svg':   'image/svg+xml',
+            '.ico':   'image/x-icon',
+            '.woff2': 'font/woff2',
+            '.woff':  'font/woff',
+            '.ttf':   'font/ttf',
+          }
+          const ct = mimeMap[path.extname(staticFile).toLowerCase()] || 'application/octet-stream'
+          res.writeHead(200, { 'Content-Type': ct })
+          fs.createReadStream(staticFile).pipe(res)
+          return
+        }
+      } catch {
+        // fall through to 404
+      }
     }
 
     sendJson(res, 404, { error: 'not found' })

@@ -1,7 +1,6 @@
 import { GraphEntity } from '@/data/types'
 import { buildGroundingContext, localAnswer } from '@/lib/grounding'
 import { graphData } from '@/lib/graphData'
-import MermaidDiagram from '@/components/MermaidDiagram'
 import axios from 'axios'
 import type { ChangeEvent } from 'react'
 import { useMemo, useState } from 'react'
@@ -182,7 +181,7 @@ export default function HomePage() {
                 <h3>Diagram</h3>
                 {!selected.diagram && <div className="meta">Entity nay chua co diagram.</div>}
                 {!!selected.diagram && isMermaidStart(selected.diagram) && (
-                  <MermaidDiagram content={selected.diagram} />
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selected.diagram}</pre>
                 )}
                 {!!selected.diagram && !isMermaidStart(selected.diagram) && (
                   <div>
@@ -205,53 +204,6 @@ export default function HomePage() {
                   <textarea rows={10} value={answer} readOnly />
                 </div>
               </section>
-
-              {selected.mockup_image_url && (
-                <section className="section">
-                  <h3>📐 Mockup Image</h3>
-                  <img 
-                    src={selected.mockup_image_url} 
-                    alt="Mockup" 
-                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid #ddd' }} 
-                  />
-                </section>
-              )}
-
-              {selected.mockup_description && (
-                <section className="section">
-                  <h3>📐 Mockup & UI</h3>
-                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                    {selected.mockup_description}
-                  </pre>
-                </section>
-              )}
-
-              {selected.notes_for_dev && (
-                <section className="section">
-                  <h3>👨‍💻 Developer Notes</h3>
-                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                    {selected.notes_for_dev}
-                  </pre>
-                </section>
-              )}
-
-              {selected.notes_for_designer && (
-                <section className="section">
-                  <h3>🎨 Designer Notes</h3>
-                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                    {selected.notes_for_designer}
-                  </pre>
-                </section>
-              )}
-
-              {selected.notes_for_client && (
-                <section className="section">
-                  <h3>📋 Client Notes</h3>
-                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0, padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                    {selected.notes_for_client}
-                  </pre>
-                </section>
-              )}
 
               <section className="section">
                 <h3>Data metadata</h3>
