@@ -8,6 +8,7 @@ const net = require('node:net')
 const appRoot = __dirname
 const repoRoot = path.resolve(appRoot, '..')
 const dataFile = path.join(appRoot, 'src', 'data', 'graph.generated.json')
+const rawMarkdownFile = path.join(appRoot, 'src', 'data', 'raw-markdown.generated.json')
 const htmlFile = path.join(appRoot, 'public', 'index.html')
 const publicDir = path.join(appRoot, 'public')
 const runtimeFile = path.join(appRoot, '.knowledgeweb-runtime.json')
@@ -213,11 +214,19 @@ const buildExtractedObjects = (graph) => ({
   ],
 })
 
-const readRawMarkdown = () =>
-  markdownSources
+const readRawMarkdown = () => {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(rawMarkdownFile, 'utf-8'))
+    if (Array.isArray(parsed?.files)) return parsed.files
+  } catch {
+    // fallback below
+  }
+
+  return markdownSources
     .map((rel) => ({ rel, abs: path.join(repoRoot, rel) }))
     .filter((x) => fs.existsSync(x.abs))
     .map((x) => ({ path: x.rel, content: fs.readFileSync(x.abs, 'utf-8') }))
+}
 
 const buildProgressSteps = () => {
   const graph = safeReadJson()

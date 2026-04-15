@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-09T07:34:52.652Z",
+  "generatedAt": "2026-04-15T02:29:42.915Z",
   "sourceOfTruth": "NotecuaQuyen/knowledge-base.md",
   "assumptions": [
     "Event Organizer payout eligibility độc lập với role instructor (Giả định)",
@@ -125,7 +125,12 @@
       "questions": [
         "Khi nào pending được release thành available?"
       ],
-      "diagram": "flowchart LR\\nA[Purchase] --> B[Pending]\\nB --> C[Release]\\nC --> D[Available]\\nD --> E[Payout Request]\\nE --> F[Locked]\\nF --> G[Payout Processed]"
+      "diagram": "flowchart LR\n  A[Purchase] --> B[Pending]\n  B --> C[Release]\n  C --> D[Available]\n  D --> E[Payout Request]\n  E --> F[Locked]\n  F --> G[Payout Processed]",
+      "mockupImageUrl": "/mockups/hybrid-wallet-sow.svg",
+      "mockupDescription": "Hybrid Wallet theo SOW (dich all users, rollout theo phase)\n\n  - Header profile + quick CTA vao My Balance\n  - Tong quan so du theo stream class/event\n  - Transaction lane de xem context cho BA/PO/PM, Dev, Design, Client\n  - Co che do scroll de theo doi ghi chu va guideline theo doi tuong",
+      "notesForDev": "Entry screen chi dieu huong, khong tinh toan so du tai man nay.\n\n  Can lam o backend:\n  1. Wallet ledger table theo user\n  2. Wallet transaction co idempotency_key va before/after balance\n  3. Reconciliation job + monthly export",
+      "notesForDesigner": "Tap trung 1 CTA va My Balance de giam nhieu.\n\n  Visual hierarchy: Profile info -> My Balance entry -> Transaction context.\n  Badge stream phai nhin duoc trong 1 giay.\n  Canh bao payout dat gan CTA.",
+      "notesForClient": "Man mo dau giup user hieu diem vao vi nhanh, khong doi business logic.\n\n  Muc tieu phase 1: thong nhat ngon ngu san pham giua BA/PO/PM, Dev, Design va Client.\n  Rollout theo phase, khong bat buoc thay doi toan bo flow hien tai ngay lap tuc."
     },
     {
       "slug": "module-class-commerce",

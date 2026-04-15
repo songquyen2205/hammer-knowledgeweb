@@ -1,35 +1,56 @@
-import { useEffect, useRef } from 'react'
-import mermaid from 'mermaid'
+import { useEffect, useRef, useState } from 'react'
 
-interface MermaidDiagramProps {
+type MermaidDiagramProps = {
   content: string
 }
 
 export default function MermaidDiagram({ content }: MermaidDiagramProps) {
-  const divRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const renderIdRef = useRef(`mermaid-${Math.random().toString(36).slice(2)}`)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!divRef.current) return
+    let mounted = true
 
-    const renderDiagram = async () => {
+    const render = async () => {
       try {
-        mermaid.contentLoaded()
-        const { svg } = await mermaid.render('mermaid-diagram', content)
-        if (divRef.current) {
-          divRef.current.innerHTML = svg
+        setError('')
+        const mermaid = (await import('mermaid')).default
+
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'loose',
+          theme: 'default',
+        })
+
+        const normalized = (content || '').replace(/\\n/g, '\n').trim()
+        const { svg } = await mermaid.render(renderIdRef.current, normalized)
+
+        if (mounted && containerRef.current) {
+          containerRef.current.innerHTML = svg
         }
-      } catch (error) {
-        console.error('Mermaid render error:', error)
-        if (divRef.current) {
-          divRef.current.innerHTML = `<div style="color: red; padding: 10px; border: 1px solid red; border-radius: 4px;">
-            Loi render diagram: ${(error as Error)?.message || 'Unknown error'}
-          </div>`
-        }
+      } catch (e) {
+        if (!mounted) return
+        const message = e instanceof Error ? e.message : 'Unknown Mermaid render error'
+        setError(message)
       }
     }
 
-    renderDiagram()
+    void render()
+
+    return () => {
+      mounted = false
+    }
   }, [content])
 
-  return <div ref={divRef} style={{ overflow: 'auto' }} />
+  if (error) {
+    return (
+      <div>
+        <div className="meta">Mermaid render error, fallback plain text:</div>
+        <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{content}</pre>
+      </div>
+    )
+  }
+
+  return <div ref={containerRef} style={{ overflowX: 'auto' }} />
 }

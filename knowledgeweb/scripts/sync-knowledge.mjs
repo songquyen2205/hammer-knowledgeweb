@@ -1,8 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const root = path.resolve(process.cwd(), '..')
+const root = path.resolve(process.cwd())
 const outFile = path.resolve(process.cwd(), 'src/data/graph.generated.json')
+const rawMarkdownOutFile = path.resolve(process.cwd(), 'src/data/raw-markdown.generated.json')
 
 const SOURCE_OF_TRUTH = 'NotecuaQuyen/knowledge-base.md'
 
@@ -15,24 +16,24 @@ const oldFolders = ['docs', 'Quyennote', 'docs-old', 'Notion-export']
 const oldFoldersFound = oldFolders.filter((f) => exists(f))
 
 const markdownFiles = [
-  'NotecuaQuyen/knowledge-base.md',
-  'NotecuaQuyen/hammer_wallet.md',
-  'NotecuaQuyen/hammer_businessmodel.md',
-  'NotecuaQuyen/hammer_toan-bo-du-an.md',
-  'NotecuaQuyen/thuat-ngu.md',
-  'NotecuaQuyen/kpi.md',
-  'NotecuaQuyen/open-issues.md',
-  'README.md',
-  '.github/copilot-instructions.md',
+  'knowledge-source/NotecuaQuyen/knowledge-base.md',
+  'knowledge-source/NotecuaQuyen/hammer_wallet.md',
+  'knowledge-source/NotecuaQuyen/hammer_businessmodel.md',
+  'knowledge-source/NotecuaQuyen/hammer_toan-bo-du-an.md',
+  'knowledge-source/NotecuaQuyen/thuat-ngu.md',
+  'knowledge-source/NotecuaQuyen/kpi.md',
+  'knowledge-source/NotecuaQuyen/open-issues.md',
+  'knowledge-source/README.md',
+  'knowledge-source/.github/copilot-instructions.md',
 ]
 
 const sourceFiles = [
-  'hammer-api/config/routes.rb',
-  'hammer-api/app/models/user.rb',
-  'hammer-api/app/models/class_room.rb',
-  'hammer-api/app/models/order.rb',
-  'hammer-api/app/models/transfer.rb',
-  'hammer-api/app/models/event_refund.rb',
+  'knowledge-source/hammer-api/config/routes.rb',
+  'knowledge-source/hammer-api/app/models/user.rb',
+  'knowledge-source/hammer-api/app/models/class_room.rb',
+  'knowledge-source/hammer-api/app/models/order.rb',
+  'knowledge-source/hammer-api/app/models/transfer.rb',
+  'knowledge-source/hammer-api/app/models/event_refund.rb',
 ]
 
 const safeRead = (relPath) => {
@@ -123,8 +124,35 @@ const entities = [
     tags: ['module', 'wallet', 'ledger'],
     highlights: ['auditability', 'idempotency', 'stream separation'],
     questions: ['Khi nao pending duoc release thanh available?'],
-    diagram:
-      'flowchart LR\\nA[Purchase] --> B[Pending]\\nB --> C[Release]\\nC --> D[Available]\\nD --> E[Payout Request]\\nE --> F[Locked]\\nF --> G[Payout Processed]',
+    diagram: `flowchart LR
+  A[Purchase] --> B[Pending]
+  B --> C[Release]
+  C --> D[Available]
+  D --> E[Payout Request]
+  E --> F[Locked]
+  F --> G[Payout Processed]`,
+    mockupImageUrl: '/mockups/hybrid-wallet-sow.svg',
+    mockupDescription: `Hybrid Wallet theo SOW (dich all users, rollout theo phase)
+
+  - Header profile + quick CTA vao My Balance
+  - Tong quan so du theo stream class/event
+  - Transaction lane de xem context cho BA/PO/PM, Dev, Design, Client
+  - Co che do scroll de theo doi ghi chu va guideline theo doi tuong`,
+    notesForDev: `Entry screen chi dieu huong, khong tinh toan so du tai man nay.
+
+  Can lam o backend:
+  1. Wallet ledger table theo user
+  2. Wallet transaction co idempotency_key va before/after balance
+  3. Reconciliation job + monthly export`,
+    notesForDesigner: `Tap trung 1 CTA va My Balance de giam nhieu.
+
+  Visual hierarchy: Profile info -> My Balance entry -> Transaction context.
+  Badge stream phai nhin duoc trong 1 giay.
+  Canh bao payout dat gan CTA.`,
+    notesForClient: `Man mo dau giup user hieu diem vao vi nhanh, khong doi business logic.
+
+  Muc tieu phase 1: thong nhat ngon ngu san pham giua BA/PO/PM, Dev, Design va Client.
+  Rollout theo phase, khong bat buoc thay doi toan bo flow hien tai ngay lap tuc.`,
   },
   {
     slug: 'module-class-commerce',
@@ -602,6 +630,11 @@ const normalizedOutput = applyVietnameseDiacritics(output)
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true })
 fs.writeFileSync(outFile, JSON.stringify(normalizedOutput, null, 2) + '\n', 'utf-8')
+
+const rawMarkdownPayload = {
+  files: docsContent.map((x) => ({ path: x.file, content: x.content })),
+}
+fs.writeFileSync(rawMarkdownOutFile, JSON.stringify(rawMarkdownPayload, null, 2) + '\n', 'utf-8')
 
 const docsLines = docsContent.reduce((s, x) => s + countLines(x.content), 0)
 const sourceLines = sourceContent.reduce((s, x) => s + countLines(x.content), 0)

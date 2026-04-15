@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-label="Hybrid Wallet mockup">
+  <rect width="1280" height="780" fill="#f3f3f3"/>
+  <text x="24" y="40" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#1f2937">Hybrid Wallet theo SOW (dich ALL users, rollout theo phase)</text>
+  <text x="24" y="74" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#4b5563">Mockup thong nhat cho BA/PO/PM, Dev, Design, Client</text>
+
+  <rect x="24" y="98" width="620" height="42" rx="12" fill="#f7efe7" stroke="#d9b99b"/>
+  <text x="334" y="125" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#9a5317">Dang an Dance Coin</text>
+
+  <rect x="662" y="98" width="594" height="42" rx="12" fill="#f7f7f7" stroke="#dadada"/>
+  <text x="958" y="125" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#4b5563">Che do Scroll</text>
+
+  <rect x="24" y="160" width="620" height="592" rx="40" fill="#121417"/>
+  <rect x="64" y="194" width="540" height="520" rx="34" fill="#e5e7eb"/>
+  <text x="86" y="248" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700" fill="#111827">Profile</text>
+
+  <rect x="86" y="288" width="494" height="114" rx="24" fill="#f3f4f6" stroke="#d1d5db"/>
+  <circle cx="145" cy="344" r="36" fill="#fb923c"/>
+  <text x="198" y="347" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#111827">Quyen BA</text>
+  <text x="198" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="24" fill="#6b7280">@quyen_egitech</text>
+
+  <rect x="86" y="424" width="494" height="88" rx="22" fill="#f9fafb" stroke="#d1d5db"/>
+  <rect x="108" y="449" width="32" height="32" rx="6" fill="#f3d8cb"/>
+  <text x="170" y="475" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#111827">My Balance</text>
+  <text x="560" y="475" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#ea580c">$1223.49</text>
+
+  <rect x="662" y="160" width="594" height="380" rx="18" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="688" y="198" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#111827">Context Note (BA/PO/PM)</text>
+
+  <rect x="684" y="216" width="550" height="140" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="704" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#9ca3af">CHO DESIGN</text>
+  <text x="704" y="272" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">Tap trung 1 CTA vao My Balance de giam nhieu.</text>
+  <text x="704" y="296" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">Visual hierarchy: Profile info -&gt; My Balance.</text>
+  <text x="704" y="326" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#9ca3af">CHO DEV</text>
+  <text x="704" y="350" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">Entry screen chi dieu huong, khong tinh toan so du tai day.</text>
+
+  <rect x="684" y="372" width="550" height="146" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="704" y="402" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#9ca3af">SELECTED TRANSACTION</text>
+  <text x="704" y="432" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#9ca3af">CONTEXT</text>
+  <text x="704" y="458" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">Chua chon transaction cu the. Chon 1 giao dich de xem context.</text>
+  <text x="704" y="484" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">Lane: All streams</text>
+
+  <rect x="662" y="560" width="594" height="192" rx="18" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="688" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#111827">Luu y / De xuat</text>
+  <text x="688" y="634" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">- Pending tru truoc, het pending thi available</text>
+  <text x="688" y="662" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">- Payout minimum va tan suat hien thi ro rang</text>
+  <text x="688" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#374151">- Badge stream can de nhin trong 1 giay</text>
+</svg>

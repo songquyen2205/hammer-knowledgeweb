@@ -1,6 +1,7 @@
 import { GraphEntity } from '@/data/types'
 import { buildGroundingContext, localAnswer } from '@/lib/grounding'
 import { graphData } from '@/lib/graphData'
+import MermaidDiagram from '@/components/MermaidDiagram'
 import axios from 'axios'
 import type { ChangeEvent } from 'react'
 import { useMemo, useState } from 'react'
@@ -112,6 +113,8 @@ export default function HomePage() {
                 <option value="metric">metric</option>
                 <option value="system">system</option>
                 <option value="source">source</option>
+                <option value="rule">rule</option>
+                <option value="open_issue">open_issue</option>
               </select>
             </div>
             <ul className="list">
@@ -181,7 +184,7 @@ export default function HomePage() {
                 <h3>Diagram</h3>
                 {!selected.diagram && <div className="meta">Entity nay chua co diagram.</div>}
                 {!!selected.diagram && isMermaidStart(selected.diagram) && (
-                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selected.diagram}</pre>
+                  <MermaidDiagram content={selected.diagram} />
                 )}
                 {!!selected.diagram && !isMermaidStart(selected.diagram) && (
                   <div>
@@ -190,6 +193,43 @@ export default function HomePage() {
                   </div>
                 )}
               </section>
+
+              {(selected.mockupImageUrl || selected.mockupDescription) && (
+                <section className="section">
+                  <h3>Mockup</h3>
+                  {selected.mockupImageUrl && (
+                    <img
+                      src={selected.mockupImageUrl}
+                      alt={`Mockup ${selected.title}`}
+                      style={{ width: '100%', maxWidth: 920, borderRadius: 10, border: '1px solid #d6d6d6' }}
+                    />
+                  )}
+                  {selected.mockupDescription && (
+                    <pre style={{ whiteSpace: 'pre-wrap', marginTop: 10 }}>{selected.mockupDescription}</pre>
+                  )}
+                </section>
+              )}
+
+              {selected.notesForDev && (
+                <section className="section">
+                  <h3>Notes for Dev</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selected.notesForDev}</pre>
+                </section>
+              )}
+
+              {selected.notesForDesigner && (
+                <section className="section">
+                  <h3>Notes for Designer</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selected.notesForDesigner}</pre>
+                </section>
+              )}
+
+              {selected.notesForClient && (
+                <section className="section">
+                  <h3>Notes for Client</h3>
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selected.notesForClient}</pre>
+                </section>
+              )}
 
               <section className="section">
                 <h3>Ask AI grounded</h3>

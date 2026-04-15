@@ -1,6 +1,6 @@
 export type GraphEntity = {
   slug: string
-  type: 'actor' | 'module' | 'flow' | 'concept' | 'metric' | 'system' | 'source'
+  type: 'actor' | 'module' | 'flow' | 'concept' | 'metric' | 'system' | 'source' | 'rule' | 'open_issue'
   title: string
   subtitle: string
   summary: string
@@ -10,6 +10,11 @@ export type GraphEntity = {
   highlights: string[]
   questions: string[]
   diagram?: string
+  mockupImageUrl?: string
+  mockupDescription?: string
+  notesForDev?: string
+  notesForDesigner?: string
+  notesForClient?: string
 }
 
 export type GraphEdge = {
